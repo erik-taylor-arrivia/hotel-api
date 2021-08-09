@@ -8,7 +8,7 @@ const DateInput = () => {
   const [checkOut, setCheckOut] = useState(null);
 
   return (
-    <div>
+    <div id="date-wrapper" style={{ display: "flex" }}>
       <DatePicker
         id="check-in"
         selected={checkIn}
@@ -16,6 +16,7 @@ const DateInput = () => {
         selectsStart
         startDate={checkIn}
         endDate={checkOut}
+        placeholderText="Check In Date"
       />
       <DatePicker
         id="check-out"
@@ -25,6 +26,7 @@ const DateInput = () => {
         startDate={checkIn}
         endDate={checkOut}
         minDate={checkIn}
+        placeholderText="Check Out Date"
       />
     </div>
   );

@@ -1,5 +1,13 @@
+import Styled from "@emotion/styled";
+
 const SubmitButton = () => {
-  return <button type="submit">SEARCH</button>;
+  return <SubmitBtn type="submit">SEARCH</SubmitBtn>;
 };
 
 export default SubmitButton;
+
+const SubmitBtn = Styled.button`
+  height: 50px;
+  padding: 0.8rem;
+  margin: 0.2rem;
+`;

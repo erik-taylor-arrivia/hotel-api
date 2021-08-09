@@ -57,7 +57,6 @@ const Form = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // should pass places and dates to child components on submit
     getLocations(places);
   };
 
@@ -69,7 +68,7 @@ const Form = () => {
     >
       <Title>External API</Title>
       <SearchForm
-        id="geosearchForm"
+        id="geosearch-form"
         autoComplete="off"
         onSubmit={(e) => {
           handleSubmit(e);
@@ -98,11 +97,6 @@ const SearchForm = Styled.form`
   input {
     height: 50px;
     padding: 0.2rem;
-    margin: 0.2rem;
-  }
-  button {
-    height: 50px;
-    padding: 0.8rem;
     margin: 0.2rem;
   }
 `;
