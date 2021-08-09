@@ -1,4 +1,5 @@
 const PlacesInput = ({ getLocations }) => {
+  const val = document.getElementById("geo-location");
   return (
     <input
       required
@@ -13,6 +14,7 @@ const PlacesInput = ({ getLocations }) => {
         getLocations(e.target.value);
       }}
       onKeyDown={(e) => {
+        getLocations(e.target.value);
         if (e.key === "Enter") {
           getLocations(e.target.value);
         }

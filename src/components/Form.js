@@ -2,13 +2,15 @@ import { useState, useEffect } from "react";
 import DateInput from "./DateInput";
 import SubmitButton from "./SubmitButton";
 import PlacesInput from "./PlacesInput";
+import PlacesOutput from "./PlacesOutput";
 
 import { motion } from "framer-motion";
 import Styled from "@emotion/styled";
-import PlacesOutput from "./PlacesOutput";
 
 const Form = () => {
   const [places, setPlaces] = useState([]);
+  const [checkIn, setCheckIn] = useState(null);
+  const [checkOut, setCheckOut] = useState(null);
 
   useEffect(() => {
     //getLocations("San Diego");
@@ -36,28 +38,28 @@ const Form = () => {
     }
   };
 
-  // const getHotels = async (searchLocation, lat, long, checkIn, checkOut) => {
-  //   const apiUrl = `http://land-dev-apim-dev-usw.azure-api.net/hotel-example-fromsrc/v1/location?requestId=reqId&searchRadius=1&searchType=radius&locale=en_US&latitude=${lat}&longitude=${long}&adultCount=2&checkIn=${checkIn}&checkOut=${checkOut}&childAges=11&placeName=${searchLocation}`;
+  const getHotels = async (searchLocation, lat, long, checkIn, checkOut) => {
+    const apiUrl = `http://land-dev-apim-dev-usw.azure-api.net/hotel-example-fromsrc/v1/location?requestId=reqId&searchRadius=1&searchType=radius&locale=en_US&latitude=${lat}&longitude=${long}&adultCount=2&checkIn=${checkIn}&checkOut=${checkOut}&childAges=11&placeName=${searchLocation}`;
 
-  //   try {
-  //     const resp = await fetch(apiUrl, {
-  //       method: "GET",
-  //       headers: {
-  //         "Ocp-Apim-Subscription-Key": "db152264ff8f4e71a15dad565f7fc98d",
-  //         "Ocp-Apim-Trace": "true",
-  //       },
-  //     });
-  //     const jsonResp = await resp.json();
-  //     console.log(jsonResp);
-  //     return jsonResp;
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+    try {
+      const resp = await fetch(apiUrl, {
+        method: "GET",
+        headers: {
+          "Ocp-Apim-Subscription-Key": "db152264ff8f4e71a15dad565f7fc98d",
+          "Ocp-Apim-Trace": "true",
+        },
+      });
+      const jsonResp = await resp.json();
+      console.log(jsonResp);
+      return jsonResp;
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    getLocations(places);
+    //getLocations(places);
   };
 
   return (
@@ -75,10 +77,15 @@ const Form = () => {
         }}
       >
         <PlacesInput getLocations={getLocations} />
-        <DateInput />
+        <DateInput setCheckIn={checkIn} setCheckOut={checkOut} />
         <SubmitButton />
       </SearchForm>
-      <PlacesOutput places={places} />
+      <PlacesOutput
+        places={places}
+        getHotels={getHotels}
+        checkIn={checkIn}
+        checkOut={checkOut}
+      />
     </motion.div>
   );
 };

@@ -1,7 +1,8 @@
 import Styled from "@emotion/styled";
 
-const PlacesOutput = ({ places }) => {
+const PlacesOutput = ({ places, getHotels, checkIn, checkOut }) => {
   const handlePlaceClick = (e) => {
+    e.preventDefault();
     const placesDiv = document.getElementById("places");
     console.log(`Awesome work ${e.target.innerText}`);
     //placesDiv.style.display = "none";
@@ -11,14 +12,24 @@ const PlacesOutput = ({ places }) => {
     <LocationResults id="places">
       {places.map((query) => {
         return (
-          <h4
-            key={query.placeId}
-            onClick={(e) => {
-              handlePlaceClick(e);
-            }}
-          >
-            {query.placeLongName} {query.latitude} {query.longitude}
-          </h4>
+          query,
+          (
+            <h4
+              key={query.placeId}
+              onClick={(e) => {
+                handlePlaceClick(e);
+                getHotels(
+                  query.placeLongName,
+                  query.latitude,
+                  query.longitude,
+                  "2021-10-15",
+                  "2021-10-30"
+                );
+              }}
+            >
+              {query.placeLongName} {query.latitude} {query.longitude}
+            </h4>
+          )
         );
       })}
     </LocationResults>
