@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import DateInput from "./DateInput";
-import SubmitButton from "./SubmitButton";
-import PlacesInput from "./PlacesInput";
+// import SubmitButton from "./SubmitButton";
+// import PlacesInput from "./PlacesInput";
 import PlacesOutput from "./PlacesOutput";
 
 import { motion } from "framer-motion";
 import Styled from "@emotion/styled";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const Form = () => {
   const [places, setPlaces] = useState([]);
@@ -31,35 +32,16 @@ const Form = () => {
 
       const locations = await geosearch.json();
       setPlaces(locations.places);
-      console.log(locations.places);
       return locations;
     } catch (error) {
       console.log(`geoSearch API Error: ${error}`);
     }
   };
 
-  const getHotels = async (searchLocation, lat, long, checkIn, checkOut) => {
-    const apiUrl = `http://land-dev-apim-dev-usw.azure-api.net/hotel-example-fromsrc/v1/location?requestId=reqId&searchRadius=1&searchType=radius&locale=en_US&latitude=${lat}&longitude=${long}&adultCount=2&checkIn=${checkIn}&checkOut=${checkOut}&childAges=11&placeName=${searchLocation}`;
-
-    try {
-      const resp = await fetch(apiUrl, {
-        method: "GET",
-        headers: {
-          "Ocp-Apim-Subscription-Key": "db152264ff8f4e71a15dad565f7fc98d",
-          "Ocp-Apim-Trace": "true",
-        },
-      });
-      const jsonResp = await resp.json();
-      console.log(jsonResp);
-      return jsonResp;
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    //getLocations(places);
+    const input = document.getElementById("geo-location");
+    getLocations(input.value);
   };
 
   return (
@@ -76,16 +58,52 @@ const Form = () => {
           handleSubmit(e);
         }}
       >
-        <PlacesInput getLocations={getLocations} />
-        <DateInput setCheckIn={checkIn} setCheckOut={checkOut} />
-        <SubmitButton />
+        {/* <PlacesInput getLocations={getLocations} /> */}
+        <input
+          required
+          type="text"
+          name="geo-search"
+          id="geo-location"
+          placeholder="Search Location"
+          // onBlur={(e) => {
+          //   getLocations(e.target.value);
+          // }}
+          // onChange={(e) => {
+          //   getLocations(e.target.value);
+          // }}
+          // onKeyDown={(e) => {
+          //   getLocations(e.target.value);
+          // }}
+        />
+        {/* <DateInput setCheckIn={checkIn} setCheckOut={checkOut} /> */}
+        <div id="date-wrapper" style={{ display: "flex" }}>
+          <DatePicker
+            id="check-in"
+            selected={checkIn}
+            onChange={(date) => setCheckIn(date)}
+            selectsStart
+            startDate={checkIn}
+            endDate={checkOut}
+            minDate={new Date()}
+            placeholderText="Check In Date"
+            required={true}
+          />
+          <DatePicker
+            id="check-out"
+            selected={checkOut}
+            onChange={(date) => setCheckOut(date)}
+            selectsEnd
+            startDate={checkIn}
+            endDate={checkOut}
+            minDate={checkIn}
+            placeholderText="Check Out Date"
+            required={true}
+          />
+        </div>
+        {/* <SubmitButton /> */}
+        <SubmitBtn type="submit">SEARCH</SubmitBtn>
       </SearchForm>
-      <PlacesOutput
-        places={places}
-        getHotels={getHotels}
-        checkIn={checkIn}
-        checkOut={checkOut}
-      />
+      <PlacesOutput places={places} checkIn={checkIn} checkOut={checkOut} />
     </motion.div>
   );
 };
@@ -106,4 +124,10 @@ const SearchForm = Styled.form`
     padding: 0.2rem;
     margin: 0.2rem;
   }
+`;
+
+const SubmitBtn = Styled.button`
+  height: 50px;
+  padding: 0.8rem;
+  margin: 0.2rem;
 `;

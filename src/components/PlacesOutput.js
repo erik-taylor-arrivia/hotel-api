@@ -1,38 +1,68 @@
+import { useState } from "react";
 import Styled from "@emotion/styled";
 
-const PlacesOutput = ({ places, getHotels, checkIn, checkOut }) => {
-  const handlePlaceClick = (e) => {
-    e.preventDefault();
-    const placesDiv = document.getElementById("places");
-    console.log(`Awesome work ${e.target.innerText}`);
-    //placesDiv.style.display = "none";
+const PlacesOutput = ({ places, checkIn, checkOut }) => {
+  const [hotels, setHotels] = useState([]);
+
+  const getHotels = async (searchLocation, lat, long, checkIn, checkOut) => {
+    const apiUrl = `http://land-dev-apim-dev-usw.azure-api.net/hotel-example-fromsrc/v1/location?requestId=reqId&searchRadius=1&searchType=radius&locale=en_US&latitude=${lat}&longitude=${long}&adultCount=2&checkIn=${checkIn}&checkOut=${checkOut}&childAges=11&placeName=${searchLocation}`;
+
+    try {
+      const resp = await fetch(apiUrl, {
+        method: "GET",
+        headers: {
+          "Ocp-Apim-Subscription-Key": "db152264ff8f4e71a15dad565f7fc98d",
+          "Ocp-Apim-Trace": "true",
+        },
+      });
+      const jsonResp = await resp.json();
+      console.log(jsonResp);
+      setHotels(jsonResp.hotels);
+      return jsonResp;
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
-    <LocationResults id="places">
-      {places.map((query) => {
-        return (
-          query,
-          (
+    <>
+      <LocationResults id="places">
+        {places.map((place) => {
+          return (
             <h4
-              key={query.placeId}
+              key={place.placeId}
               onClick={(e) => {
-                handlePlaceClick(e);
                 getHotels(
-                  query.placeLongName,
-                  query.latitude,
-                  query.longitude,
-                  "2021-10-15",
-                  "2021-10-30"
+                  place.placeLongName,
+                  place.latitude,
+                  place.longitude,
+                  checkIn.toLocaleDateString(),
+                  checkOut.toLocaleDateString()
                 );
               }}
             >
-              {query.placeLongName} {query.latitude} {query.longitude}
+              {place.placeLongName}
             </h4>
-          )
-        );
-      })}
-    </LocationResults>
+          );
+        })}
+      </LocationResults>
+      <HotelWrapper>
+        {hotels.map((hotel) => {
+          return (
+            <HotelCard className="hotel-card" key={hotel.id}>
+              <h3>
+                {hotel.name} <span>{hotel.starRating}</span>
+              </h3>
+              <img src={hotel.imageUrl} alt={hotel.name} />
+              <p>{`market base: $${hotel.marketBase} market total: $${hotel.marketTotal} `}</p>
+              <p>{`net base: $${hotel.netBase} net total: $${hotel.netTotal} `}</p>
+              <i>{hotel.location}</i>
+              <small>{hotel.shortDescription}</small>
+            </HotelCard>
+          );
+        })}
+      </HotelWrapper>
+    </>
   );
 };
 
@@ -45,12 +75,28 @@ const LocationResults = Styled.div`
   flex-direction: column;
   align-items: flex-start;
 
-  @media(min-width: 700px){
-    max-width: 700px;
+  @media(min-width: 600px){
+    max-width: 625px;
     margin: 0 auto;
   }
 
   h4 {
     font-weight: 500;
   }
+`;
+
+const HotelWrapper = Styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+`;
+
+const HotelCard = Styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  max-width: 30%;
+  border: 1px solid black;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
 `;
