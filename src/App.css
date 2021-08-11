@@ -37,3 +37,7 @@ img {
 .App {
   text-align: center;
 }
+
+.react-blue {
+  color: rgb(97, 218, 251);
+}

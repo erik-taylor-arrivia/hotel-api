@@ -1,10 +1,11 @@
 import { useState } from "react";
 import Styled from "@emotion/styled";
 
-const PlacesOutput = ({ places, checkIn, checkOut }) => {
+const PlacesOutput = ({ places, checkIn, checkOut, loading, setLoading }) => {
   const [hotels, setHotels] = useState([]);
 
   const getHotels = async (searchLocation, lat, long, checkIn, checkOut) => {
+    setLoading(true);
     const apiUrl = `http://land-dev-apim-dev-usw.azure-api.net/hotel-example-fromsrc/v1/location?requestId=reqId&searchRadius=1&searchType=radius&locale=en_US&latitude=${lat}&longitude=${long}&adultCount=2&checkIn=${checkIn}&checkOut=${checkOut}&childAges=11&placeName=${searchLocation}`;
 
     try {
@@ -22,6 +23,7 @@ const PlacesOutput = ({ places, checkIn, checkOut }) => {
     } catch (error) {
       console.log(error);
     }
+    setLoading(false);
   };
 
   return (

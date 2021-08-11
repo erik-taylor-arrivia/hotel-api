@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-// import SubmitButton from "./SubmitButton";
-// import PlacesInput from "./PlacesInput";
+import Loading from "./Loading";
 import PlacesOutput from "./PlacesOutput";
 
 import { motion } from "framer-motion";
@@ -12,6 +11,7 @@ const Form = () => {
   const [places, setPlaces] = useState([]);
   const [checkIn, setCheckIn] = useState(null);
   const [checkOut, setCheckOut] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     //getLocations("San Diego");
@@ -25,6 +25,8 @@ const Form = () => {
   }, []);
 
   const getLocations = async (places) => {
+    setLoading(true);
+
     try {
       const geosearch = await fetch(
         `https://geoservices-wa-dev-usw2.azurewebsites.net/api/v1/places/suggestions/${places}`
@@ -36,6 +38,7 @@ const Form = () => {
     } catch (error) {
       console.log(`geoSearch API Error: ${error}`);
     }
+    setLoading(false);
   };
 
   const handleSubmit = (e) => {
@@ -45,66 +48,79 @@ const Form = () => {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.8 }}
-    >
-      <Title>External API</Title>
-      <SearchForm
-        id="geosearch-form"
-        autoComplete="off"
-        onSubmit={(e) => {
-          handleSubmit(e);
+    <>
+      <motion.div
+        id="form-wrapper"
+        initial={{ opacity: 0, scale: 0 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8 }}
+        style={{
+          backgroundColor: "rgb(40, 44, 52)",
+          padding: "1rem",
         }}
       >
-        {/* <PlacesInput getLocations={getLocations} /> */}
-        <input
-          required
-          type="text"
-          name="geo-search"
-          id="geo-location"
-          placeholder="Search Location"
-          // onBlur={(e) => {
-          //   getLocations(e.target.value);
-          // }}
-          // onChange={(e) => {
-          //   getLocations(e.target.value);
-          // }}
-          // onKeyDown={(e) => {
-          //   getLocations(e.target.value);
-          // }}
+        <Title className="react-blue">External API</Title>
+        <SearchForm
+          id="geosearch-form"
+          autoComplete="off"
+          onSubmit={(e) => {
+            handleSubmit(e);
+          }}
+        >
+          <input
+            required
+            type="text"
+            name="geo-search"
+            id="geo-location"
+            placeholder="Search Location"
+            // onBlur={(e) => {
+            //   getLocations(e.target.value);
+            // }}
+            // onChange={(e) => {
+            //   getLocations(e.target.value);
+            // }}
+            // onKeyDown={(e) => {
+            //   getLocations(e.target.value);
+            // }}
+          />
+          <div id="date-wrapper" style={{ display: "flex" }}>
+            <DatePicker
+              id="check-in"
+              selected={checkIn}
+              onChange={(date) => setCheckIn(date)}
+              selectsStart
+              startDate={checkIn}
+              endDate={checkOut}
+              minDate={new Date()}
+              placeholderText="Check In Date"
+              required={true}
+            />
+            <DatePicker
+              id="check-out"
+              selected={checkOut}
+              onChange={(date) => setCheckOut(date)}
+              selectsEnd
+              startDate={checkIn}
+              endDate={checkOut}
+              minDate={checkIn}
+              placeholderText="Check Out Date"
+              required={true}
+            />
+          </div>
+          <SubmitBtn type="submit">SEARCH</SubmitBtn>
+        </SearchForm>
+        <Loading loading={loading} />
+      </motion.div>
+      <motion.div>
+        <PlacesOutput
+          places={places}
+          checkIn={checkIn}
+          checkOut={checkOut}
+          loading={loading}
+          setLoading={setLoading}
         />
-        {/* <DateInput setCheckIn={checkIn} setCheckOut={checkOut} /> */}
-        <div id="date-wrapper" style={{ display: "flex" }}>
-          <DatePicker
-            id="check-in"
-            selected={checkIn}
-            onChange={(date) => setCheckIn(date)}
-            selectsStart
-            startDate={checkIn}
-            endDate={checkOut}
-            minDate={new Date()}
-            placeholderText="Check In Date"
-            required={true}
-          />
-          <DatePicker
-            id="check-out"
-            selected={checkOut}
-            onChange={(date) => setCheckOut(date)}
-            selectsEnd
-            startDate={checkIn}
-            endDate={checkOut}
-            minDate={checkIn}
-            placeholderText="Check Out Date"
-            required={true}
-          />
-        </div>
-        {/* <SubmitButton /> */}
-        <SubmitBtn type="submit">SEARCH</SubmitBtn>
-      </SearchForm>
-      <PlacesOutput places={places} checkIn={checkIn} checkOut={checkOut} />
-    </motion.div>
+      </motion.div>
+    </>
   );
 };
 
