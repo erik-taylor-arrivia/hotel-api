@@ -12,6 +12,7 @@ const Form = () => {
   const [checkIn, setCheckIn] = useState(null);
   const [checkOut, setCheckOut] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     //getLocations("San Diego");
@@ -26,6 +27,7 @@ const Form = () => {
 
   const getLocations = async (places) => {
     setLoading(true);
+    setIsVisible(true);
 
     try {
       const geosearch = await fetch(
@@ -34,11 +36,12 @@ const Form = () => {
 
       const locations = await geosearch.json();
       setPlaces(locations.places);
+      setLoading(false);
       return locations;
     } catch (error) {
       console.log(`geoSearch API Error: ${error}`);
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleSubmit = (e) => {
@@ -79,9 +82,12 @@ const Form = () => {
             // onChange={(e) => {
             //   getLocations(e.target.value);
             // }}
-            // onKeyDown={(e) => {
-            //   getLocations(e.target.value);
-            // }}
+            onFocus={(e) => {
+              e.target.value = null;
+            }}
+            onKeyDown={(e) => {
+              getLocations(e.target.value);
+            }}
           />
           <div id="date-wrapper" style={{ display: "flex" }}>
             <DatePicker
@@ -111,15 +117,18 @@ const Form = () => {
         </SearchForm>
         <Loading loading={loading} />
       </motion.div>
-      <motion.div>
-        <PlacesOutput
-          places={places}
-          checkIn={checkIn}
-          checkOut={checkOut}
-          loading={loading}
-          setLoading={setLoading}
-        />
-      </motion.div>
+      <PlacesOutput
+        places={places}
+        checkIn={checkIn}
+        checkOut={checkOut}
+        setLoading={setLoading}
+        isVisible={isVisible}
+        setIsVisible={setIsVisible}
+        style={{
+          backgroundColor: "white",
+          padding: "1rem",
+        }}
+      />
     </>
   );
 };
