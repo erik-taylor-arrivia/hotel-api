@@ -3,7 +3,13 @@ import Hotels from "./Hotels";
 import styled from "@emotion/styled";
 import { motion } from "framer-motion";
 
-const PlacesOutput = ({ places, hotels, isVisible, handlePlaceClick }) => {
+const PlacesOutput = ({
+  places,
+  hotels,
+  amenities,
+  isVisible,
+  handlePlaceClick,
+}) => {
   if (isVisible) {
     return (
       <>
@@ -32,7 +38,7 @@ const PlacesOutput = ({ places, hotels, isVisible, handlePlaceClick }) => {
       </>
     );
   }
-  return <Hotels hotels={hotels} />;
+  return <Hotels hotels={hotels} amenities={amenities} />;
 };
 
 export default PlacesOutput;

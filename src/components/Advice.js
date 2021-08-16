@@ -43,7 +43,7 @@ const Advice = () => {
 export default Advice;
 
 const Title = styled.h2`
-  padding: 1em;
+  padding: 1rem;
 `;
 
 const Wrapper = styled.div`

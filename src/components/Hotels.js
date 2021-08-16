@@ -1,12 +1,27 @@
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouseUser } from "@fortawesome/free-solid-svg-icons";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
-import { faBed } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUser,
+  faBed,
+  faDumbbell,
+  faShuttleVan,
+  faPaw,
+  faWifi,
+  faBus,
+  faUtensils,
+  faParking,
+  faConciergeBell,
+} from "@fortawesome/free-solid-svg-icons";
 
-const Hotels = ({ hotels }) => {
+const Hotels = ({ hotels, amenities }) => {
   return (
     <>
+      {/* <ul>
+        {amenities.map((amenity) => {
+          return <li key={amenity.id}>{amenity.name}</li>;
+        })}
+      </ul> */}
       <HotelWrapper id="hotel-wrapper">
         {hotels.map((hotel) => {
           return (
@@ -15,16 +30,55 @@ const Hotels = ({ hotels }) => {
               <div className="room-details">
                 <div>
                   <FontAwesomeIcon icon={faHouseUser} />
-                  <span> 150 sq ft</span>
+                  <span> ### sq ft</span>
                 </div>
                 <div>
                   <FontAwesomeIcon icon={faUser} />
-                  <span> 2 Guests</span>
+                  <span> # Guests</span>
                 </div>
                 <div>
                   <FontAwesomeIcon icon={faBed} />
-                  <span> Guests</span>
+                  <span> # Beds</span>
                 </div>
+              </div>
+              <div className="hotel-amenities">
+                {hotel.amenityIds.map((id) => {
+                  let amenity = "";
+                  switch (id) {
+                    case 0:
+                      amenity = <FontAwesomeIcon icon={faDumbbell} />;
+                      break;
+                    case 1:
+                      amenity = <FontAwesomeIcon icon={faShuttleVan} />;
+                      break;
+                    case 2:
+                      amenity = <FontAwesomeIcon icon={faPaw} />;
+                      break;
+                    case 3:
+                      amenity = <FontAwesomeIcon icon={faWifi} />;
+                      break;
+                    case 4:
+                      amenity = <FontAwesomeIcon icon={faBus} />;
+                      break;
+                    case 5:
+                      amenity = <FontAwesomeIcon icon={faUtensils} />;
+                      break;
+                    case 6:
+                      amenity = <FontAwesomeIcon icon={faParking} />;
+                      break;
+                    case 7:
+                      amenity = <FontAwesomeIcon icon={faConciergeBell} />;
+                      break;
+
+                    default:
+                      break;
+                  }
+                  return (
+                    <span key={id} className="amenity">
+                      {amenity}{" "}
+                    </span>
+                  );
+                })}
               </div>
               <hr className="hr"></hr>
               <div className="wrapper">
@@ -62,7 +116,7 @@ const HotelCard = styled.div`
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  max-width: 20rem;
+  max-width: 22rem;
   border: 2px solid #c3c3c3;
   margin: 1rem;
   border-radius: 1rem;
@@ -85,11 +139,19 @@ const HotelCard = styled.div`
   .room-details {
     display: flex;
     justify-content: space-between;
-    margin: 0 1rem;
+    margin: 0 1rem 1rem;
     div {
       color: #898989;
       font-weight: 600;
     }
+  }
+
+  .hotel-amenities {
+    color: #898989;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-evenly;
+    margin: 0 1rem;
   }
 
   .wrapper {
@@ -109,7 +171,7 @@ const HotelCard = styled.div`
         text-decoration: line-through;
       }
       .net-rate {
-        font-size: 28px;
+        font-size: 1.75rem;
         font-weight: bold;
         color: #6b9512;
       }
@@ -117,7 +179,8 @@ const HotelCard = styled.div`
   }
   .savings {
     color: white;
-    font-weight: bold;
+    font-size: 14px;
+    font-weight: 600;
     background-color: #6b9512;
     border: 3px solid white;
     box-shadow: 0px 0px 2px 2px #898989;

@@ -14,6 +14,7 @@ const Form = () => {
   const [loading, setLoading] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [hotels, setHotels] = useState([]);
+  const [amenities, setAmenities] = useState([]);
   const [searchParams, setSearchParams] = useState({
     placeName: null,
     latitude: null,
@@ -41,17 +42,6 @@ const Form = () => {
     }
   };
 
-  const handlePlaceClick = (e) => {
-    e.preventDefault();
-    const name = e.target.getAttribute("data-placename");
-    const lat = e.target.getAttribute("data-lat");
-    const long = e.target.getAttribute("data-long");
-    const input = document.getElementById("geo-location");
-    input.value = name;
-    setSearchParams({ placeName: name, latitude: lat, longitude: long });
-    setIsVisible(false);
-  };
-
   const getHotels = async (name, lat, long, checkIn, checkOut) => {
     setIsVisible(false);
     setLoading(true);
@@ -68,12 +58,25 @@ const Form = () => {
       const jsonResp = await resp.json();
       console.log(jsonResp);
       setHotels(jsonResp.hotels);
+      setAmenities(jsonResp.amenities);
       setLoading(false);
       return jsonResp;
     } catch (error) {
       console.log(error);
       setLoading(false);
     }
+  };
+
+  const handlePlaceClick = (e) => {
+    // TODO: hide existing hotel results when a new place is clicked
+    e.preventDefault();
+    const name = e.target.getAttribute("data-placename");
+    const lat = e.target.getAttribute("data-lat");
+    const long = e.target.getAttribute("data-long");
+    const input = document.getElementById("geo-location");
+    input.value = name;
+    setSearchParams({ placeName: name, latitude: lat, longitude: long });
+    setIsVisible(false);
   };
 
   const handleSubmit = (e) => {
@@ -152,6 +155,7 @@ const Form = () => {
       <PlacesOutput
         places={places}
         hotels={hotels}
+        amenities={amenities}
         setLoading={setLoading}
         isVisible={isVisible}
         handlePlaceClick={handlePlaceClick}
@@ -176,18 +180,26 @@ const SearchForm = styled.form`
   align-items: center;
   justify-content: center;
   input {
-    height: 50px;
-    padding: 0.2rem;
+    height: 3.125rem;
+    padding: 0.2rrem;
     margin: 0.2rem;
+    border-radius: 5px;
+    border: 1px solid rgb(40, 44, 52);
+    box-shadow: 0px 0px 0px 2px white;
   }
 `;
 
 const SubmitBtn = styled.button`
-  height: 50px;
+  height: 3.4375rem;
   padding: 0.8rem;
   margin: 0.2rem;
-  color: black;
+  color: White;
+  font-weight: 600;
   border-radius: 8px;
   border: 2px solid white;
   background-color: #0494c4;
+
+  &:hover {
+    background-color: #00769e;
+  }
 `;
