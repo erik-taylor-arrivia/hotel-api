@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Loading from "./Loading";
 import PlacesOutput from "./PlacesOutput";
 
 import { motion } from "framer-motion";
-import Styled from "@emotion/styled";
+import styled from "@emotion/styled";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -13,17 +13,14 @@ const Form = () => {
   const [checkOut, setCheckOut] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    //getLocations("San Diego");
-    // getHotels(
-    //   "San Diego",
-    //   "32.714439",
-    //   "-117.162369",
-    //   "2021-10-15",
-    //   "2021-10-31"
-    // );
-  }, []);
+  const [hotels, setHotels] = useState([]);
+  const [searchParams, setSearchParams] = useState({
+    placeName: null,
+    latitude: null,
+    longitude: null,
+    checkIn: null,
+    checkOut: null,
+  });
 
   const getLocations = async (places) => {
     setLoading(true);
@@ -44,10 +41,50 @@ const Form = () => {
     }
   };
 
+  const handlePlaceClick = (e) => {
+    e.preventDefault();
+    const name = e.target.getAttribute("data-placename");
+    const lat = e.target.getAttribute("data-lat");
+    const long = e.target.getAttribute("data-long");
+    const input = document.getElementById("geo-location");
+    input.value = name;
+    setSearchParams({ placeName: name, latitude: lat, longitude: long });
+    setIsVisible(false);
+  };
+
+  const getHotels = async (name, lat, long, checkIn, checkOut) => {
+    setIsVisible(false);
+    setLoading(true);
+    const apiUrl = `http://land-dev-apim-dev-usw.azure-api.net/hotel-example-fromsrc/v1/location?requestId=reqId&searchRadius=1&searchType=radius&locale=en_US&latitude=${lat}&longitude=${long}&adultCount=2&checkIn=${checkIn}&checkOut=${checkOut}&childAges=11&placeName=${name}`;
+
+    try {
+      const resp = await fetch(apiUrl, {
+        method: "GET",
+        headers: {
+          "Ocp-Apim-Subscription-Key": "db152264ff8f4e71a15dad565f7fc98d",
+          "Ocp-Apim-Trace": "true",
+        },
+      });
+      const jsonResp = await resp.json();
+      console.log(jsonResp);
+      setHotels(jsonResp.hotels);
+      setLoading(false);
+      return jsonResp;
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    const input = document.getElementById("geo-location");
-    getLocations(input.value);
+    getHotels(
+      searchParams.placeName,
+      searchParams.latitude,
+      searchParams.longitude,
+      checkIn.toLocaleDateString(),
+      checkOut.toLocaleDateString()
+    );
   };
 
   return (
@@ -76,13 +113,8 @@ const Form = () => {
             name="geo-search"
             id="geo-location"
             placeholder="Search Location"
-            // onBlur={(e) => {
-            //   getLocations(e.target.value);
-            // }}
-            // onChange={(e) => {
-            //   getLocations(e.target.value);
-            // }}
             onFocus={(e) => {
+              // clear input value onFocus
               e.target.value = null;
             }}
             onKeyDown={(e) => {
@@ -119,11 +151,10 @@ const Form = () => {
       </motion.div>
       <PlacesOutput
         places={places}
-        checkIn={checkIn}
-        checkOut={checkOut}
+        hotels={hotels}
         setLoading={setLoading}
         isVisible={isVisible}
-        setIsVisible={setIsVisible}
+        handlePlaceClick={handlePlaceClick}
         style={{
           backgroundColor: "white",
           padding: "1rem",
@@ -135,11 +166,11 @@ const Form = () => {
 
 export default Form;
 
-const Title = Styled.h1`
+const Title = styled.h1`
   padding: 1rem;
 `;
 
-const SearchForm = Styled.form`
+const SearchForm = styled.form`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -151,8 +182,12 @@ const SearchForm = Styled.form`
   }
 `;
 
-const SubmitBtn = Styled.button`
+const SubmitBtn = styled.button`
   height: 50px;
   padding: 0.8rem;
   margin: 0.2rem;
+  color: black;
+  border-radius: 8px;
+  border: 2px solid white;
+  background-color: #0494c4;
 `;

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import Styled from "@emotion/styled";
+import styled from "@emotion/styled";
 
 function Loading({ loading }) {
   if (loading) {
@@ -20,11 +20,12 @@ function Loading({ loading }) {
 
 export default Loading;
 
-const IconWrapper = Styled(motion.div)`
-position: absolute;
-top: 12rem;
-left: 0;
-right: 0;
-margin: auto;
-font-size: 5rem;
-color: rgb(97, 218, 251);`;
+const IconWrapper = styled(motion.div)`
+  position: absolute;
+  top: 12rem;
+  left: 0;
+  right: 0;
+  margin: auto;
+  font-size: 5rem;
+  color: rgb(97, 218, 251);
+`;
