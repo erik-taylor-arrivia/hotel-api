@@ -3,13 +3,7 @@ import Hotels from "./Hotels";
 import styled from "@emotion/styled";
 import { motion } from "framer-motion";
 
-const PlacesOutput = ({
-  places,
-  hotels,
-  amenities,
-  isVisible,
-  handlePlaceClick,
-}) => {
+const PlacesOutput = ({ places, hotels, isVisible, handlePlaceClick }) => {
   if (isVisible) {
     return (
       <>
@@ -38,7 +32,7 @@ const PlacesOutput = ({
       </>
     );
   }
-  return <Hotels hotels={hotels} amenities={amenities} />;
+  return <Hotels hotels={hotels} />;
 };
 
 export default PlacesOutput;
@@ -57,5 +51,8 @@ const LocationResults = styled.div`
 
   h4 {
     font-weight: 500;
+    padding: 0.5rem 0rem;
+    color: #6b9512;
+    font-weight: 600;
   }
 `;

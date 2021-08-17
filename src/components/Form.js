@@ -6,6 +6,11 @@ import { motion } from "framer-motion";
 import styled from "@emotion/styled";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowAltCircleRight,
+  faPoop,
+} from "@fortawesome/free-solid-svg-icons";
 
 const Form = () => {
   const [places, setPlaces] = useState([]);
@@ -14,13 +19,21 @@ const Form = () => {
   const [loading, setLoading] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [hotels, setHotels] = useState([]);
-  const [amenities, setAmenities] = useState([]);
   const [searchParams, setSearchParams] = useState({
     placeName: null,
     latitude: null,
     longitude: null,
     checkIn: null,
     checkOut: null,
+    searchError: null,
+    searchErrorIcon: (
+      <p>
+        <FontAwesomeIcon
+          icon={faPoop}
+          style={{ fontSize: "8rem", padding: "2rem", color: "#6b4c41" }}
+        />
+      </p>
+    ),
   });
 
   const getLocations = async (places) => {
@@ -56,9 +69,12 @@ const Form = () => {
         },
       });
       const jsonResp = await resp.json();
+      if (!jsonResp.success) {
+        setSearchParams({ searchError: jsonResp.message });
+        console.log(searchParams.searchError);
+      }
       console.log(jsonResp);
       setHotels(jsonResp.hotels);
-      setAmenities(jsonResp.amenities);
       setLoading(false);
       return jsonResp;
     } catch (error) {
@@ -81,6 +97,7 @@ const Form = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsVisible(false);
     getHotels(
       searchParams.placeName,
       searchParams.latitude,
@@ -94,15 +111,20 @@ const Form = () => {
     <>
       <motion.div
         id="form-wrapper"
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8 }}
+        initial={{ y: -400 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 1 }}
         style={{
           backgroundColor: "rgb(40, 44, 52)",
           padding: "1rem",
         }}
       >
-        <Title className="react-blue">External API</Title>
+        <h1 style={{ color: "#6b9512", fontWeight: "400" }}>
+          Search a Destination
+        </h1>
+        <h3 style={{ color: "#ffffff", padding: "0px 0px 10px 0px" }}>
+          Find your next vacation
+        </h3>
         <SearchForm
           id="geosearch-form"
           autoComplete="off"
@@ -148,14 +170,17 @@ const Form = () => {
               required={true}
             />
           </div>
-          <SubmitBtn type="submit">SEARCH</SubmitBtn>
+          <SubmitBtn type="submit">
+            <FontAwesomeIcon icon={faArrowAltCircleRight} />
+          </SubmitBtn>
         </SearchForm>
         <Loading loading={loading} />
       </motion.div>
+      <h1>{searchParams.searchError}</h1>
+      <div></div>
       <PlacesOutput
         places={places}
         hotels={hotels}
-        amenities={amenities}
         setLoading={setLoading}
         isVisible={isVisible}
         handlePlaceClick={handlePlaceClick}
@@ -170,10 +195,6 @@ const Form = () => {
 
 export default Form;
 
-const Title = styled.h1`
-  padding: 1rem;
-`;
-
 const SearchForm = styled.form`
   display: flex;
   flex-wrap: wrap;
@@ -181,25 +202,35 @@ const SearchForm = styled.form`
   justify-content: center;
   input {
     height: 3.125rem;
-    padding: 0.2rrem;
+    padding: 0.2rem;
     margin: 0.2rem;
     border-radius: 5px;
     border: 1px solid rgb(40, 44, 52);
     box-shadow: 0px 0px 0px 2px white;
+    transition: transform 0.2s ease-in-out;
+    -webkit-font-smoothing: antialiased;
+
+    &:hover {
+      transform: scale(1.05);
+    }
   }
 `;
 
 const SubmitBtn = styled.button`
+  font-size: 26px;
   height: 3.4375rem;
+  width: 5.5rem;
   padding: 0.8rem;
   margin: 0.2rem;
   color: White;
-  font-weight: 600;
   border-radius: 8px;
   border: 2px solid white;
-  background-color: #0494c4;
+  background-color: #6b9512;
+  transition: all 0.2s ease-in-out;
+  -webkit-font-smoothing: antialiased;
 
   &:hover {
-    background-color: #00769e;
+    background-color: #638b0f;
+    transform: scale(1.05);
   }
 `;

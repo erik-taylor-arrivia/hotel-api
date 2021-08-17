@@ -22,10 +22,15 @@ export default Loading;
 
 const IconWrapper = styled(motion.div)`
   position: absolute;
-  top: 12rem;
+  top: 20rem;
   left: 0;
   right: 0;
   margin: auto;
   font-size: 5rem;
-  color: rgb(97, 218, 251);
+  width: 5rem;
+  color: #6b9512;
+
+  @media (min-width: 700px) {
+    top: 12rem;
+  }
 `;
