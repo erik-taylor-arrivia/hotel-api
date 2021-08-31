@@ -146,7 +146,7 @@ const Form = () => {
               getLocations(e.target.value);
             }}
           />
-          <div id="date-wrapper" style={{ display: "flex" }}>
+          <div id="date-wrapper">
             <DatePicker
               id="check-in"
               selected={checkIn}
@@ -212,6 +212,14 @@ const SearchForm = styled.form`
 
     &:hover {
       transform: scale(1.05);
+    }
+  }
+
+  #date-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    @media (min-width: 400px) {
+      flex-wrap: nowrap;
     }
   }
 `;

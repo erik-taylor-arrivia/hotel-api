@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { motion } from "framer-motion";
 import ReactTooltip from "react-tooltip";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouseUser } from "@fortawesome/free-solid-svg-icons";
@@ -15,13 +16,17 @@ import {
   faConciergeBell,
 } from "@fortawesome/free-solid-svg-icons";
 
-const Hotels = ({ hotels, isVisible }) => {
+const Hotels = ({ hotels }) => {
   return (
-    <>
-      <HotelWrapper id="hotel-wrapper">
-        {hotels.map((hotel) => {
-          return (
-            <HotelCard className="hotel-card" key={hotel.id}>
+    <HotelWrapper id="hotel-wrapper">
+      {hotels.map((hotel) => {
+        return (
+          <motion.div
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            key={hotel.id}
+          >
+            <HotelCard className="hotel-card">
               <img src={hotel.imageUrl} alt={hotel.name} />
               <div className="hotel-amenities">
                 {hotel.amenityIds.map((id) => {
@@ -139,10 +144,10 @@ const Hotels = ({ hotels, isVisible }) => {
                 </div>
               </div>
             </HotelCard>
-          );
-        })}
-      </HotelWrapper>
-    </>
+          </motion.div>
+        );
+      })}
+    </HotelWrapper>
   );
 };
 
